@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+  {% for restaurant in restaurants %}
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+          <div class="panel panel-success">
+            <div class="panel-heading">
+              <p>Restaurant ID : {{ restaurant.id }}</p>
+            </div>
+            <div class="panel-body">
+              <p>Name</p>
+              <h3>{{ restaurant.name }}</h3>
+            </div>
+            <div class="panel-footer">
+              <a href="#" class="btn btn-info">View</a>
+              <a href="#" class="btn btn-warning">Edit</a>
+              <a href="#" class="btn btn-danger">Delete</a>
+            </div>
+          </div>
+        </div>
+  {% endfor %}
+</div>
+{% endblock %}
