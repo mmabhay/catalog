@@ -18,19 +18,36 @@ def showRestaurants():
     restaurants = session.query(Restaurant).all()
     return render_template('restaurants.html', restaurants = restaurants)
 
+# This module will edit the current restaurant name
+@app.route('/editrestaurant/<int:restaurant_id>', methods = ['GET','POST'])
+def editRestaurant(restaurant_id):
+    restaurant = session.query(Restaurant).filter_by(id = restaurant_id).one()
+    if request.method == 'POST':
+        restaurant.name = request.form['newResName']
+        session.add(restaurant)
+        session.commit()
+        flash('Restaurant Successfully edited !!')
+        return redirect(url_for('showRestaurants'))
+    else:
+        return render_template('editrestaurant.html', restaurant = restaurant)
+
+# This module add a new restaurant to the database
+@app.route('/newrestaurant/', methods=['GET','POST'])
+def newRestaurant():
+    if request.method == 'POST':
+        newRestaurant = Restaurant(name = request.form['newResName'])
+        session.add(newRestaurant)
+        session.commit()
+        flask('New Restaurant added Successfully !!')
+        return redirect(url_for('showRestaurants'))
+    else:
+        return render_template('newrestaurant.html')
+
 # This module will display all the menu items
 @app.route('/menuitems/')
 def showAllMenuItems():
     menuitems = session.query(MenuItem).all()
     return render_template('menuitems.html', menuitems = menuitems)
-
-@app.route('/editrestaurant/<int:restaurant_id>', methods = ['GET','POST'])
-def editRestaurant(restaurant_id):
-    if request.method == 'POST':
-
-
-
-
 
 if __name__ == '__main__':
     # secret_key will be used for session
