@@ -87,10 +87,19 @@ def editMenuItem(menu_id):
         menuitem.price = request.form['course']
         session.add(menuitem)
         session.commit()
-        flask('Menu item edited successfully')
+        flask('Menu item edited successfully !!')
     else:
         return render_template('editmenuitem.html', menuitem = menuitem)
 
+@app.route('/deletemenuitem/<int:menu_id>/', methods=['GET','POST'])
+def deleteMenuItem(menu_id):
+    menuitem = session.query(MenuItem).filter_by(id = menu_id).one()
+    if request.method == 'POST':
+        session.delete(menuitem)
+        session.commit()
+        flask('Menu Item deleted successfully !!')
+    else:
+        return render_template('deletemenuitem.html', menuitem = menuitem)
 
 
 
