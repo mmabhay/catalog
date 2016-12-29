@@ -5,7 +5,7 @@
     <form action="{{ url_for('deleteMenuItem', menu_id = menuitem.id) }}" method="post">
       Do you want to delete {{ menuitem.name }} ?
       <button type="submit" class="btn btn-danger">Delete</button>
-      <a href="{{ url_for('showAllMenuItems') }}" class="btn btn-default">Cancel</a>
+      <a href="{{ url_for('showRestaurantMenu', restaurant_id = menuitem.restaurant_id) }}" class="btn btn-default">Cancel</a>
     </form>
   </div>
 </div>

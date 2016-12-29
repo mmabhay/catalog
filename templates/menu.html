@@ -1,8 +1,26 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="row">
+  <div class="col-xs-12">
+    <a href="{{ url_for('newMenuItem', restaurant_id = restaurant.id) }}">Create new menu item</a>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12 flash">
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+      <ul>
+        {% for message in messages %}
+          <li><strong>{{ message }}</strong></li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+    {% endwith %}
+  </div>
+</div>
+<div class="row">
   {% for menuitem in menuitems %}
-        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+        <div class="col-xs-12">
           <div class="panel panel-primary">
             <div class="panel-heading">
               <p>Menu Item ID : {{ menuitem.id }}</p>
@@ -13,9 +31,13 @@
               <span class="label label-success">Description</span>
               <p>{{ menuitem.description }}</p>
               <span class="label label-warning">Price</span>
-              <span> - $ {{ menuitem.price }}</span>
+              <span> -$ {{ menuitem.price }}</span>
               <span class="label label-default">Course</span>
               <p>{{ menuitem.course }}</p>
+            </div>
+            <div class="panel-footer">
+              <a href="{{ url_for('editMenuItem', menu_id = menuitem.id) }}" class="btn btn-warning">Edit</a>
+              <a href="{{ url_for('deleteMenuItem', menu_id = menuitem.id) }}" class="btn btn-danger">Delete</a>
             </div>
           </div>
         </div>

@@ -1,14 +1,14 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from database_setup import Base, Restaurant, MenuItem
 from sqlalchemy import create_engine
-from sqlalchemy.orm import session_maker
+from sqlalchemy.orm import sessionmaker
 
 app = Flask(__name__)
 
 engine = create_engine('sqlite:///restaurantcatalog.db')
 Base.metadata.bind = engine
 
-DBSession = session_maker(bind = engine)
+DBSession = sessionmaker(bind = engine)
 session = DBSession()
 
 # This module will display all the restaurants #CHECKED
@@ -21,8 +21,9 @@ def showRestaurants():
 # This module display the menu items of a restaurant
 @app.route('/restaurant/<int:restaurant_id>/')
 def showRestaurantMenu(restaurant_id):
+    restaurant = session.query(Restaurant).filter_by(id = restaurant_id).one()
     menuitems = session.query(MenuItem).filter_by(restaurant_id = restaurant_id).all()
-    return render_template('menu.html', menuitems = menuitems)
+    return render_template('menu.html', restaurant = restaurant, menuitems = menuitems)
 
 # This module will edit the current restaurant name
 @app.route('/editrestaurant/<int:restaurant_id>/', methods = ['GET','POST'])
@@ -44,7 +45,7 @@ def newRestaurant():
         newRestaurant = Restaurant(name = request.form['newResName'])
         session.add(newRestaurant)
         session.commit()
-        flask('New Restaurant added Successfully !!')
+        flash('New Restaurant added Successfully !!')
         return redirect(url_for('showRestaurants'))
     else:
         return render_template('newrestaurant.html')
@@ -55,10 +56,12 @@ def deleteRestaurant(restaurant_id):
     restaurant = session.query(Restaurant).filter_by(id = restaurant_id).one()
     if request.method == 'POST':
         menuitems = session.query(MenuItem).filter_by(restaurant_id = restaurant.id).all()
-        session.delete(menuitems)
+        for menuitem in menuitems:
+            session.delete(menuitem)
         session.delete(restaurant)
         session.commit()
-        flask('Restaurant deleted Successfully !!')
+        flash('Restaurant deleted Successfully !!')
+        return redirect(url_for('showRestaurants'))
     else:
         return render_template('deleterestaurant.html', restaurant = restaurant)
 
@@ -78,7 +81,8 @@ def newMenuItem(restaurant_id):
         price = request.form['price'], course = request.form['course'], restaurant_id = restaurant.id )
         session.add(newMenuItem)
         session.commit()
-        flask("New menu item added Successfully !!")
+        flash("New menu item added Successfully !!")
+        return redirect(url_for('showRestaurantMenu', restaurant_id = restaurant.id))
     else:
         return render_template('newmenuitem.html', restaurant = restaurant)
 
@@ -90,10 +94,11 @@ def editMenuItem(menu_id):
         menuitem.name = request.form['newMenuName']
         menuitem.description = request.form['description']
         menuitem.price = request.form['price']
-        menuitem.price = request.form['course']
+        menuitem.course = request.form['course']
         session.add(menuitem)
         session.commit()
-        flask('Menu item edited successfully !!')
+        flash('Menu item edited successfully !!')
+        return redirect(url_for('showRestaurantMenu', restaurant_id = menuitem.restaurant_id))
     else:
         return render_template('editmenuitem.html', menuitem = menuitem)
 
@@ -103,7 +108,8 @@ def deleteMenuItem(menu_id):
     if request.method == 'POST':
         session.delete(menuitem)
         session.commit()
-        flask('Menu Item deleted successfully !!')
+        flash('Menu Item deleted successfully !!')
+        return redirect(url_for('showRestaurantMenu', restaurant_id = menuitem.restaurant_id))
     else:
         return render_template('deletemenuitem.html', menuitem = menuitem)
 

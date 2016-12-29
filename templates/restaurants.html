@@ -1,8 +1,26 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="row">
+  <div class="col-xs-12">
+    <a href="{{ url_for('newRestaurant') }}">Create new restautant</a>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12 flash">
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+      <ul>
+        {% for message in messages %}
+          <li><strong>{{ message }}</strong></li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+    {% endwith %}
+  </div>
+</div>
+<div class="row">
   {% for restaurant in restaurants %}
-        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+        <div class="col-xs-6">
           <div class="panel panel-success">
             <div class="panel-heading">
               <p>Restaurant ID : {{ restaurant.id }}</p>
