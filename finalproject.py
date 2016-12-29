@@ -62,6 +62,7 @@ def showAllMenuItems():
     menuitems = session.query(MenuItem).all()
     return render_template('menuitems.html', menuitems = menuitems)
 
+# This module add new menu item in the database
 @app.route('/newmenuitem/<int:restaurant_id>/', methods = ['GET','POST'])
 def newMenuItem(restaurant_id):
     restaurant = session.query(Restaurant).filter_by(id = restaurant_id).one()
@@ -74,6 +75,23 @@ def newMenuItem(restaurant_id):
         flask("New menu item added Successfully !!")
     else:
         return render_template('newmenuitem.html', restaurant = restaurant)
+
+# This module edit the menu item in the database
+@app.route('/editmenuitem/<int:menu_id>/', methods = ['GET','POST'])
+def editMenuItem(menu_id):
+    menuitem = session.query(MenuItem).filter_by(id = menu_id).one()
+    if request.method == 'POST':
+        menuitem.name = request.form['newMenuName']
+        menuitem.description = request.form['description']
+        menuitem.price = request.form['price']
+        menuitem.price = request.form['course']
+        session.add(menuitem)
+        session.commit()
+        flask('Menu item edited successfully')
+    else:
+        return render_template('editmenuitem.html', menuitem = menuitem)
+
+
 
 
 if __name__ == '__main__':

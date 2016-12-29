@@ -1,0 +1,48 @@
+{% block content %}
+<div class="row">
+  <div class="col-xs-12 col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4">
+    <form action="{{ url_for('editMenuItem', menu_id = menuitem.id) }}" method="post">
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          Menu ID : {{ menuitem.id }}
+        </div>
+        <div class="panel-body">
+          <div class="form-group">
+            <label for="newMenuName">Name</label>
+            <input type="text" class="form-control" id="newMenuName" name="newMenuName" placeholder="{{ menuitem.name }}">
+          </div>
+          <div class="form-group">
+            <label for="description">Description</label>
+            <textarea class="form-control" id="description" name="description" placeholder="{{ menuitem.description }}" rows="3"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="price">Price</label>
+            <div class="input-group">
+              <div class="input-group-addon">$</div>
+              <input type="text" class="form-control" name="price" id="price" placeholder="{{ menuitem.price }}">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="course">Course</label>
+            <label class="radio-inline">
+              <input type="radio" id="course" value="Appetizer" name="course">Appetizer
+            </label>
+            <label class="radio-inline">
+              <input type="radio" id="course" value="Entree" name="course">Entree
+            </label>
+            <label class="radio-inline">
+              <input type="radio" id="course" value="Dessert" name="course">Dessert
+            </label>
+            <label class="radio-inline">
+              <input type="radio" id="course" value="Beverage" name="course">Beverage
+            </label>
+          </div>
+        </div>
+        <div class="panel-footer ">
+          <button type="submit" class="btn btn-success">Add</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
