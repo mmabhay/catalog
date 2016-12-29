@@ -12,9 +12,9 @@
               <h3>{{ restaurant.name }}</h3>
             </div>
             <div class="panel-footer">
-              <a href="#" class="btn btn-info">View</a>
-              <a href="#" class="btn btn-warning">Edit</a>
-              <a href="#" class="btn btn-danger">Delete</a>
+              <a href="{{ url_for('showRestaurantMenu', restaurant_id = restaurant.id) }}" class="btn btn-info">View</a>
+              <a href="{{ url_for('editRestaurant', restaurant_id = restaurant.id) }}" class="btn btn-warning">Edit</a>
+              <a href="{{ url_for('deleteRestaurant', restaurant_id = restaurant.id) }}" class="btn btn-danger">Delete</a>
             </div>
           </div>
         </div>

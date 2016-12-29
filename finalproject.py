@@ -11,12 +11,18 @@ Base.metadata.bind = engine
 DBSession = session_maker(bind = engine)
 session = DBSession()
 
-# This module will display all the restaurants
+# This module will display all the restaurants #CHECKED
 @app.route('/')
 @app.route('/restaurants/')
 def showRestaurants():
     restaurants = session.query(Restaurant).all()
     return render_template('restaurants.html', restaurants = restaurants)
+
+# This module display the menu items of a restaurant
+@app.route('/restaurant/<int:restaurant_id>/')
+def showRestaurantMenu(restaurant_id):
+    menuitems = session.query(MenuItem).filter_by(restaurant_id = restaurant_id).all()
+    return render_template('menu.html', menuitems = menuitems)
 
 # This module will edit the current restaurant name
 @app.route('/editrestaurant/<int:restaurant_id>/', methods = ['GET','POST'])
