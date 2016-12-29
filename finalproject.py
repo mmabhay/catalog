@@ -62,6 +62,20 @@ def showAllMenuItems():
     menuitems = session.query(MenuItem).all()
     return render_template('menuitems.html', menuitems = menuitems)
 
+@app.route('/newmenuitem/<int:restaurant_id>/', methods = ['GET','POST'])
+def newMenuItem(restaurant_id):
+    restaurant = session.query(Restaurant).filter_by(id = restaurant_id).one()
+    if request.method == 'POST':
+        newMenuItem = MenuItem(name = request.form['newMenuName'],
+        description = request.form['description'],
+        price = request.form['price'], course = request.form['course'], restaurant_id = restaurant.id )
+        session.add(newMenuItem)
+        session.commit()
+        flask("New menu item added Successfully !!")
+    else:
+        return render_template('newmenuitem.html', restaurant = restaurant)
+
+
 if __name__ == '__main__':
     # secret_key will be used for session
     app.secret_key = "hello_fsnd"
