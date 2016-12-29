@@ -19,7 +19,7 @@ def showRestaurants():
     return render_template('restaurants.html', restaurants = restaurants)
 
 # This module will edit the current restaurant name
-@app.route('/editrestaurant/<int:restaurant_id>', methods = ['GET','POST'])
+@app.route('/editrestaurant/<int:restaurant_id>/', methods = ['GET','POST'])
 def editRestaurant(restaurant_id):
     restaurant = session.query(Restaurant).filter_by(id = restaurant_id).one()
     if request.method == 'POST':
@@ -42,6 +42,19 @@ def newRestaurant():
         return redirect(url_for('showRestaurants'))
     else:
         return render_template('newrestaurant.html')
+
+# This module delete the restaurant from the database
+@app.route('/deleterestaurant/<int:restaurant_id>/', methods=['GET','POST'])
+def deleteRestaurant(restaurant_id):
+    restaurant = session.query(Restaurant).filter_by(id = restaurant_id).one()
+    if request.method == 'POST':
+        menuitems = session.query(MenuItem).filter_by(restaurant_id = restaurant.id).all()
+        session.delete(menuitems)
+        session.delete(restaurant)
+        session.commit()
+        flask('Restaurant deleted Successfully !!')
+    else:
+        return render_template('deleterestaurant.html', restaurant = restaurant)
 
 # This module will display all the menu items
 @app.route('/menuitems/')

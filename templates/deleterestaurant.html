@@ -1,0 +1,11 @@
+{% block content %}
+<div class="row">
+  <div class="col-xs-12 col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4">
+    <form action="{{ url_for('deleteRestaurant', restaurant_id = restaurant.id) }}" method="post">
+      Do you want to delete {{ restaurant.name }} ?
+      <button type="submit" class="btn btn-danger">Delete</button>
+      <a href="{{ url_for('showRestaurants') }}" class="btn btn-default">Cancel</a>
+    </form>
+  </div>
+</div>
+{% endblock %}
