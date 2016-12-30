@@ -13,6 +13,7 @@ import httplib2
 import json
 from flask import make_response
 import requests
+from functools import wraps
 
 CLIENT_ID = json.loads(open('client_secrets.json','r').read())['web']['client_id']
 APPLICATION_NAME = "Restaurant Menu Application"
@@ -24,6 +25,22 @@ Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind = engine)
 session = DBSession()
+
+def login_required(func):
+    '''
+    login_required: function decorator for checking if user is logged in
+
+    Returns:
+        If not logged in, redirects to login page.
+    '''
+    @wraps(func)
+    def decorated_function(*args, **kwargs):
+        if 'email' in login_session:
+            return func(*args, **kwargs)
+        else:
+            flash("You are not allowed to acces this without logging in!")
+            return redirect("/login/")
+    return decorated_function
 
 # This module will display all the restaurants
 @app.route('/')
@@ -41,6 +58,7 @@ def showRestaurantMenu(restaurant_id):
 
 # This module will edit the current restaurant name
 @app.route('/editrestaurant/<int:restaurant_id>/', methods = ['GET','POST'])
+@login_required
 def editRestaurant(restaurant_id):
     restaurant = session.query(Restaurant).filter_by(id = restaurant_id).one()
     if request.method == 'POST':
@@ -54,6 +72,7 @@ def editRestaurant(restaurant_id):
 
 # This module add a new restaurant to the database
 @app.route('/newrestaurant/', methods=['GET','POST'])
+@login_required
 def newRestaurant():
     if request.method == 'POST':
         newRestaurant = Restaurant(name = request.form['newResName'])
@@ -66,6 +85,7 @@ def newRestaurant():
 
 # This module delete the restaurant from the database
 @app.route('/deleterestaurant/<int:restaurant_id>/', methods=['GET','POST'])
+@login_required
 def deleteRestaurant(restaurant_id):
     restaurant = session.query(Restaurant).filter_by(id = restaurant_id).one()
     if request.method == 'POST':
@@ -87,6 +107,7 @@ def showAllMenuItems():
 
 # This module add new menu item in the database
 @app.route('/newmenuitem/<int:restaurant_id>/', methods = ['GET','POST'])
+@login_required
 def newMenuItem(restaurant_id):
     restaurant = session.query(Restaurant).filter_by(id = restaurant_id).one()
     if request.method == 'POST':
@@ -102,6 +123,7 @@ def newMenuItem(restaurant_id):
 
 # This module edit the menu item in the database
 @app.route('/editmenuitem/<int:menu_id>/', methods = ['GET','POST'])
+@login_required
 def editMenuItem(menu_id):
     menuitem = session.query(MenuItem).filter_by(id = menu_id).one()
     if request.method == 'POST':
@@ -117,6 +139,7 @@ def editMenuItem(menu_id):
         return render_template('editmenuitem.html', menuitem = menuitem)
 
 @app.route('/deletemenuitem/<int:menu_id>/', methods=['GET','POST'])
+@login_required
 def deleteMenuItem(menu_id):
     menuitem = session.query(MenuItem).filter_by(id = menu_id).one()
     if request.method == 'POST':
@@ -270,6 +293,32 @@ def gdisconnect():
             json.dumps('Failed to revoke token for given user.'), 400)
         response.headers['Content-Type'] = 'application/json'
         return response
+
+@app.route('/disconnect')
+def disconnect():
+    '''
+    disconnect: Method for logging out of site
+
+    Returns:
+        Redirects to home page.
+    '''
+    if 'provider' in login_session:
+        if login_session['provider'] == 'google':
+            gdisconnect()
+            del login_session['gplus_id']
+        del login_session['username']
+        del login_session['email']
+        del login_session['picture']
+        del login_session['user_id']
+        del login_session['provider']
+        del login_session['access_token']
+        del login_session['state']
+        flash("You have successfully been logged out.")
+        return redirect(url_for('showRestaurants'))
+    else:
+        flash("You were not logged in")
+        return redirect(url_for('showRestaurants'))
+
 
 if __name__ == '__main__':
     # secret_key will be used for session
