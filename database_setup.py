@@ -5,6 +5,14 @@ from sqlalchemy.orm import relationship
 
 Base = declarative_base()
 
+class User(Base):
+    __tablename__ = "user"
+
+    id = Column(Integer, primary_key = True)
+    email = Column(String(100), unique = True, nullable = False)
+    name = Column(String(100), nullable = True)
+    avatar = Column(String(200))
+
 class Restaurant(Base):
     __tablename__ = "restaurant"
 
