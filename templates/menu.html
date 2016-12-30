@@ -1,10 +1,14 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="row">
-  <div class="col-xs-12">
-    <a href="{{ url_for('newMenuItem', restaurant_id = restaurant.id) }}">Create new menu item</a>
-  </div>
-</div>
+{% if 'username' in session %}
+  {% if restaurant.user_id == session.user_id %}
+    <div class="row">
+      <div class="col-xs-12">
+        <a href="{{ url_for('newMenuItem', restaurant_id = restaurant.id) }}">Create new menu item</a>
+      </div>
+    </div>
+  {% endif %}
+{% endif %}
 <div class="row">
   <div class="col-md-12 flash">
     {% with messages = get_flashed_messages() %}
@@ -19,6 +23,7 @@
   </div>
 </div>
 <div class="row">
+  {% if menuitems %}
   {% for menuitem in menuitems %}
         <div class="col-xs-12">
           <div class="panel panel-primary">
@@ -35,12 +40,17 @@
               <span class="label label-default">Course</span>
               <p>{{ menuitem.course }}</p>
             </div>
-            <div class="panel-footer">
-              <a href="{{ url_for('editMenuItem', menu_id = menuitem.id) }}" class="btn btn-warning">Edit</a>
-              <a href="{{ url_for('deleteMenuItem', menu_id = menuitem.id) }}" class="btn btn-danger">Delete</a>
-            </div>
+            {% if 'username' in session %}
+              {% if menuitem.user_id == session.user_id %}
+                <div class="panel-footer">
+                    <a href="{{ url_for('editMenuItem', menu_id = menuitem.id) }}" class="btn btn-warning">Edit</a>
+                    <a href="{{ url_for('deleteMenuItem', menu_id = menuitem.id) }}" class="btn btn-danger">Delete</a>
+                </div>
+            {% endif %}
+          {% endif %}
           </div>
         </div>
   {% endfor %}
+  {% endif %}
 </div>
 {% endblock %}

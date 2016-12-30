@@ -11,13 +11,15 @@ class User(Base):
     id = Column(Integer, primary_key = True)
     email = Column(String(100), unique = True, nullable = False)
     name = Column(String(100), nullable = True)
-    avatar = Column(String(200))
+    avatar = Column(String(200), nullable = True)
 
 class Restaurant(Base):
     __tablename__ = "restaurant"
 
     id = Column(Integer, primary_key = True)
     name = Column(String(250), nullable = False)
+    user_id = Column(Integer, ForeignKey('user.id'))
+    user = relationship(User)
 
     @property
     def serialize(self):
@@ -35,6 +37,8 @@ class MenuItem(Base):
     course = Column(String(250))
     restaurant_id = Column(Integer, ForeignKey('restaurant.id'))
     restaurant = relationship(Restaurant)
+    user_id = Column(Integer, ForeignKey('user.id'))
+    user = relationship(User)
 
     @property
     def serialize(self):
