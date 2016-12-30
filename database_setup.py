@@ -32,9 +32,9 @@ class MenuItem(Base):
     __tablename__ = "menuitem"
     id = Column(Integer, primary_key = True)
     name = Column(String(80), nullable = False)
-    description = Column(String(250), nullable = False)
-    price = Column(Integer, nullable = False)
-    course = Column(String(250))
+    description = Column(String(250), nullable = True)
+    price = Column(Integer, nullable = True)
+    course = Column(String(250), nullable = True)
     restaurant_id = Column(Integer, ForeignKey('restaurant.id'))
     restaurant = relationship(Restaurant)
     user_id = Column(Integer, ForeignKey('user.id'))

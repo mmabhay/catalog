@@ -97,6 +97,10 @@ def editRestaurant(restaurant_id):
     if restaurant.user_id != login_session['user_id']:
         return redirect(url_for('showRestaurants'))
     if request.method == 'POST':
+        if request.form['newResName'] == "":
+            flash("All fields are necessary!!")
+            return render_template('editrestaurant.html',
+                restaurant = restaurant)
         restaurant.name = request.form['newResName']
         session.add(restaurant)
         session.commit()
@@ -111,6 +115,9 @@ def editRestaurant(restaurant_id):
 @login_required
 def newRestaurant():
     if request.method == 'POST':
+        if request.form['newResName'] == "":
+            flash("All fields are necessary!!")
+            return render_template('newrestaurant.html')
         newRestaurant = Restaurant(name = request.form['newResName'],
             user_id = login_session['user_id'])
         session.add(newRestaurant)
@@ -163,15 +170,22 @@ def newMenuItem(restaurant_id):
             restaurant_id = restaurant.id))
 
     if request.method == 'POST':
-        newMenuItem = MenuItem(name = request.form['newMenuName'],
-        description = request.form['description'],
-        price = request.form['price'], course = request.form['course'],
-            restaurant_id = restaurant.id, user_id = login_session['user_id'])
-        session.add(newMenuItem)
-        session.commit()
-        flash("New menu item added Successfully !!")
-        return redirect(url_for('showRestaurantMenu',
-            restaurant_id = restaurant.id))
+        if (request.form['newMenuName'] != "" and
+            request.form['description'] != "" and request.form['price'] != ""
+            and request.form['course'] != ""):
+
+            newMenuItem = MenuItem(name = request.form['newMenuName'],
+            description = request.form['description'],
+            price = request.form['price'], course = request.form['course'],
+                restaurant_id = restaurant.id, user_id = login_session['user_id'])
+            session.add(newMenuItem)
+            session.commit()
+            flash("New menu item added Successfully !!")
+            return redirect(url_for('showRestaurantMenu',
+                restaurant_id = restaurant.id))
+        else:
+            flash("All fields are necessary!!")
+            return render_template('newmenuitem.html', restaurant = restaurant)
     else:
         return render_template('newmenuitem.html', restaurant = restaurant)
 
@@ -185,15 +199,22 @@ def editMenuItem(menu_id):
     if menuitem.user_id != login_session['user_id']:
         return redirect(url_for('showRestaurants'))
     if request.method == 'POST':
-        menuitem.name = request.form['newMenuName']
-        menuitem.description = request.form['description']
-        menuitem.price = request.form['price']
-        menuitem.course = request.form['course']
-        session.add(menuitem)
-        session.commit()
-        flash('Menu item edited successfully !!')
-        return redirect(url_for('showRestaurantMenu',
-            restaurant_id = menuitem.restaurant_id))
+        if (request.form['newMenuName'] != "" and
+            request.form['description'] != "" and request.form['price'] != ""
+            and request.form['course'] != ""):
+
+            menuitem.name = request.form['newMenuName']
+            menuitem.description = request.form['description']
+            menuitem.price = request.form['price']
+            menuitem.course = request.form['course']
+            session.add(menuitem)
+            session.commit()
+            flash('Menu item edited successfully !!')
+            return redirect(url_for('showRestaurantMenu',
+                restaurant_id = menuitem.restaurant_id))
+        else:
+            flash("All fields are necessary!!")
+            return render_template('editmenuitem.html', menuitem = menuitem)
     else:
         return render_template('editmenuitem.html', menuitem = menuitem)
 
