@@ -30,7 +30,7 @@ session = DBSession()
 # End points
 
 @app.route('/restaurants/JSON/')
-def restaurantEndPoint():
+def restaurantsEndPoint():
     '''
     restaurantEndPoint : function returns the list of
     restaurants in json format
@@ -48,6 +48,25 @@ def menuItemsEndPoint():
     menuitems = session.query(MenuItem).all()
     return jsonify(MenuItem = [menuitem.serialize
         for menuitem in menuitems])
+
+@app.route('/restaurant/<int:restaurant_id>/JSON/')
+def singleRestaurantEndPoint(restaurant_id):
+    '''
+    singleRestaurantEndPoint : function return json data for
+    a particular restaurant.
+    '''
+    restaurant = session.query(Restaurant).filter_by(
+        id == restaurant_id).first()
+    return jsonify(Restaurant = restaurant.serialize)
+
+@app.route('/menuitem/<int:menu_id>/JSON/')
+def singleMenuItemEndPoint(menu_id):
+    '''
+    singleMenuItemEndPoint : function return json data of single
+    menu item
+    '''
+    menuitem = session.query(MenuItem).filter_by(id == menu_id).first()
+    return jsonify(MenuItem = menuitem.serialize)
 
 def login_required(func):
     '''
@@ -90,6 +109,9 @@ def showRestaurantMenu(restaurant_id):
 @app.route('/editrestaurant/<int:restaurant_id>/', methods = ['GET','POST'])
 @login_required
 def editRestaurant(restaurant_id):
+    '''
+        editRestaurant : function edit restaurant details
+    '''
     restaurant = session.query(Restaurant).filter_by(
         id = restaurant_id).first()
     if restaurant is None:
@@ -114,6 +136,9 @@ def editRestaurant(restaurant_id):
 @app.route('/newrestaurant/', methods=['GET','POST'])
 @login_required
 def newRestaurant():
+    '''
+        newRestaurant : function add a new restaurant to the database
+    '''
     if request.method == 'POST':
         if request.form['newResName'] == "":
             flash("All fields are necessary!!")
@@ -257,6 +282,7 @@ def getUserInfo(user_id):
     user = session.query(User).filter_by(id = user_id).one()
     return user
 
+# This method generates random string state of 32 chars
 @app.route('/login/')
 def showLogin():
     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
@@ -264,6 +290,7 @@ def showLogin():
     login_session['state'] = state
     return render_template('login.html', STATE = state)
 
+# This method is used to connect to google plus
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
     '''
@@ -364,6 +391,7 @@ def gdisconnect():
     '''
     # Only disconnect a connected user.
     credentials = login_session.get('credentials')
+    # If the credentials were not found it return 401 response
     if credentials is None:
         response = make_response(
             json.dumps('Current user not connected.'), 401)
@@ -384,6 +412,7 @@ def gdisconnect():
 def disconnect():
     '''
     disconnect: Method for logging out of site
+    - This methods delete all the sessions
 
     Returns:
         Redirects to home page.

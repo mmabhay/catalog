@@ -12,6 +12,8 @@ Item catalog is a python-flask based web application that provides the user with
 ### JSON Endpoint
 * JSON endpoint for restaurant table http://localhost:5000/restaurants/JSON
 * JSON endpoint for menuitems table http://localhost:5000/menuitems/JSON
+* JSON endpoint for particular restaurant http://localhost:5000/restaurant/{restaurant_id_here}/JSON
+* JSON endpoint for particular menu item http://localhost:5000/menuitem/{menu_id}/JSON
 
 Note : To run the program install vagrant on your system
 
