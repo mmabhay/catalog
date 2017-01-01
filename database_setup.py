@@ -9,15 +9,15 @@ class User(Base):
     __tablename__ = "user"
 
     id = Column(Integer, primary_key = True)
-    email = Column(String(100), unique = True, nullable = False)
-    name = Column(String(100), nullable = True)
-    avatar = Column(String(200), nullable = True)
+    email = Column(String(200), unique = True, nullable = False)
+    name = Column(String(200), nullable = True)
+    avatar = Column(String(400), nullable = True)
 
 class Restaurant(Base):
     __tablename__ = "restaurant"
 
     id = Column(Integer, primary_key = True)
-    name = Column(String(250), nullable = False)
+    name = Column(String(450), nullable = False)
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship(User)
 
@@ -31,10 +31,10 @@ class Restaurant(Base):
 class MenuItem(Base):
     __tablename__ = "menuitem"
     id = Column(Integer, primary_key = True)
-    name = Column(String(80), nullable = False)
-    description = Column(String(250), nullable = True)
+    name = Column(String(400), nullable = False)
+    description = Column(String(450), nullable = True)
     price = Column(Integer, nullable = True)
-    course = Column(String(250), nullable = True)
+    course = Column(String(450), nullable = True)
     restaurant_id = Column(Integer, ForeignKey('restaurant.id'))
     restaurant = relationship(Restaurant)
     user_id = Column(Integer, ForeignKey('user.id'))
@@ -51,5 +51,6 @@ class MenuItem(Base):
             'restaurant_id' : self.restaurant_id,
         }
 
-engine = create_engine('sqlite:///restaurantcatalog.db')
+# engine = create_engine('sqlite:///restaurantcatalog.db')
+engine = create_engine('postgresql://catalog:abhaypass@localhost/catalog')
 Base.metadata.create_all(engine)

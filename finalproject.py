@@ -20,7 +20,9 @@ APPLICATION_NAME = "Restaurant Menu Application"
 
 app = Flask(__name__)
 
-engine = create_engine('sqlite:///restaurantcatalog.db')
+# engine = create_engine('sqlite:///restaurantcatalog.db')
+# Below engine is for linux web server configuration
+engine = create_engine('postgresql://catalog:abhaypass@localhost/catalog')
 Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)
