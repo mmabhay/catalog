@@ -5,6 +5,8 @@ from sqlalchemy.orm import relationship
 
 Base = declarative_base()
 
+
+# User table to store users data
 class User(Base):
     __tablename__ = "user"
 
@@ -13,6 +15,8 @@ class User(Base):
     name = Column(String(200), nullable = True)
     avatar = Column(String(400), nullable = True)
 
+
+# Restaurant table to store restaurants data
 class Restaurant(Base):
     __tablename__ = "restaurant"
 
@@ -28,6 +32,8 @@ class Restaurant(Base):
             'name' : self.name,
         }
 
+
+# Menuitem table to store menu item data
 class MenuItem(Base):
     __tablename__ = "menuitem"
     id = Column(Integer, primary_key = True)
